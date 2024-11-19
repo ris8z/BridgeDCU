@@ -17,9 +17,15 @@ class Round(object):
         return not self.bid_phase_flag
 
     def makeBid(self, playerId:str, bid:str) -> bool: # true if the bidding is done
+        if self.isBiddingOver():
+            raise ValueError("not possilbe to bid outside of the bidding time")
+
         result = self.bidPhase.makeBid(playerId, bid)
+
         if result:
             self.bid_phase_flag = False
-            self.is_round_over = True
+            self.is_round_over = True #this bc for the moment the round is just the bidding phase
+                                      #a littile step at time
             return True
+
         return False
