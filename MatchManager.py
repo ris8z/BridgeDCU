@@ -52,3 +52,19 @@ class MatchManager(object):
             player.lobbyId = lobby.id
             return True
         return False
+
+    def handleBid(self, playerId:str, lobbyId:str, bid:str) -> bool:
+        #first try to get the game from the lobby obj if it exist
+        lobby = self.lobbies.get(lobbyId)
+        if not lobby:
+            raise ValueError(f"{lobbyId} does not exist")
+
+        if not lobby.game:
+            raise ValueError(f"{lobbyId} has not started a game yet")
+        
+        try:
+            lobby.game.makeBid(playerId, bid)
+        except ValueError as e:
+            raise e
+
+        return lobby.game.isBiddingComplete() 

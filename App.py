@@ -31,6 +31,8 @@ def onJoin(data):
     playerId, lobbyId = request.sid, data.get("lobbyid")
     if matchesmanager.assignPlayerToLobby(lobbyId, playerId):
         emit("enterlobby", {"msg": f"You joined {lobbyId}!"})
+        # qua devi aggiungere il tentativo di start di un game in una lobby easy ci sei quasi fai pauara cazzo
+        # adesso camomillla e let's go
     else:
         emit("enterlobby", {"msg": f"Some error occured"})
 
@@ -48,7 +50,22 @@ def onDisonnect():
     emit("message", {"msg": "You are now disconected"})
 
 
+@socketio.on("makebid")
+def onMakeBid(data):
+    playerId = request.sid
+    lobbyId = data["lobbyId"]
+    bid = data["bid"]
+
+    try:
+        isBiddingOver = matchesmanager.handleBid(playerId, lobbyId, bid)
+        if isBiddingOver:
+            emit("bidding_complete", {
+                'contract': matchesmanager.lobbies[lobbyId].game.getContract(),
+                'msg': 'bidding phase is over'
+            }, to=lobbyId)
+    except ValueError as e:
+        emit("error", {'msg': str(e)}, to=playerId)
+
+
 if __name__ == "__main__":
     socketio.run(app, debug=True)
-
-

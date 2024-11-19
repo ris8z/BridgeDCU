@@ -1,9 +1,5 @@
 from typing import List
-
-
-class Card:
-    pass
-
+from Card import Card
 
 class Player:
     def __init__(self, id: str, name: str):
@@ -22,7 +18,9 @@ class Player:
         self.hand.append(card)
 
     def playCard(self, card):
-        if card in self.hand:
+        try:
             self.hand.remove(card)
             return card
-        return None
+        except:
+            ValueError("You don't have this card")
+        

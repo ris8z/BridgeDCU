@@ -1,12 +1,13 @@
 from typing import List
 from player import Player
 from flask_socketio import join_room, leave_room, emit
-
+from game import Game
 
 class Lobby:
     def __init__(self, id: str):
         self.id = id
         self.players: List[Player] = []
+        self.game: Game | None = None
 
     def isFull(self) -> bool:
         return len(self.players) == 4
@@ -27,6 +28,11 @@ class Lobby:
             leave_room(self.id, sid=player.id)
             return True
         return False
+
+    def startGame(self):
+        if not self.isFull():
+            raise ValueError("Not enough player to start a game")
+        self.game = Game(self.players)
 
     def broadcastMassage(self, eventName, data):
         emit(eventName, data, to=self.id)
