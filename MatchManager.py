@@ -1,7 +1,9 @@
-from typing import Dict
-from player import Player
 from lobby import Lobby
 import random
+from game import Game
+from player import Player
+from lobby import Lobby
+from typing import Dict
 
 
 class MatchManager(object):
@@ -47,11 +49,23 @@ class MatchManager(object):
     def assignPlayerToLobby(self, lobbyId: str, playerId: str) -> bool:
         lobby = self.lobbies.get(lobbyId, None)
         player = self.players.get(playerId, None)
+        print(lobbyId, playerId)
         if lobby and player and not lobby.isFull():
             lobby.addPlayer(player)
             player.lobbyId = lobby.id
             return True
+        #print(lobby, player)
         return False
+
+    def tryToStartGame(self, lobbyId:str) -> Game:
+        lobby = self.lobbies.get(lobbyId)
+        if not lobby:
+            raise ValueError("Lobby does not exist")
+
+        if not lobby.isFull():
+            raise ValueError("Not enough player to start a Game")
+        
+        return lobby.startGame()
 
     def handleBid(self, playerId:str, lobbyId:str, bid:str) -> bool:
         #first try to get the game from the lobby obj if it exist

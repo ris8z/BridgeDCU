@@ -29,10 +29,13 @@ class Lobby:
             return True
         return False
 
-    def startGame(self):
-        if not self.isFull():
-            raise ValueError("Not enough player to start a game")
+    def startGame(self) -> Game:
         self.game = Game(self.players)
+        self.game.startNewRound()
+        return self.game
 
     def broadcastMassage(self, eventName, data):
         emit(eventName, data, to=self.id)
+
+    def __str__(self):
+        return f"Lobby({self.id})"

@@ -1,6 +1,7 @@
 from typing import List
 from player import Player
 from bidPhase import BidPhase
+from Deck import Card, Deck
 
 
 class Round(object):
@@ -9,6 +10,14 @@ class Round(object):
         self.is_round_over = False
         self.players = players
         self.bidPhase = BidPhase(self.players)
+        self.dealCards() # quando creamio un round le carte vanno distribuite subito
+
+    # quando starti il nuovo round da le carte alla genete e la gente le riceve
+    # poi inizia la fase di bid mo chilla dio cane
+    def dealCards(self):
+        d = Deck()
+        for p in self.players:
+            p.hand = d.deal(13)
 
     def isRoundOver(self) -> bool:
         return self.is_round_over
