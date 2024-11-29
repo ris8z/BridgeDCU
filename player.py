@@ -22,7 +22,7 @@ class Player:
             self.hand.remove(card)
             return card
         except:
-            ValueError("You don't have this card")
+            raise ValueError("You don't have this card")
 
     def __str__(self):
         return self.name

@@ -24,6 +24,12 @@ class BidPhase:
         self.current_turn = 0
         self.pass_in_a_row = 0
 
+    def getFirstTurn(self) -> int:
+        if self.contract.author == -1 or self.pass_in_a_row < 3:
+            raise ValueError("You are calling this function before the BidPHase finish and you can't")
+
+        return (self.contract.author - 1) % 4
+
     def makeBid(self, playerId: str, bid:str) -> bool:
         if playerId != self.players[self.current_turn].id:
             raise ValueError("Not the player's turn to bid")

@@ -14,6 +14,7 @@ class MatchManager(object):
     def addPlayer(self, playerId: str, name: str) -> Player:
         player = Player(playerId, name)
         self.players[playerId] = player
+        print(f"{player} has connected")
         return player
 
     def removePlayer(self, playerId) -> bool:
@@ -38,6 +39,7 @@ class MatchManager(object):
     def createLobby(self) -> str:
         id = self.getNewLobbyId()
         self.lobbies[id] = Lobby(id)
+        print(f"{self.lobbies[id]} has been created")
         return id
 
     def getNewLobbyId(self) -> str:
@@ -46,16 +48,19 @@ class MatchManager(object):
             if guess not in self.lobbies:
                 return str(guess)
 
-    def assignPlayerToLobby(self, lobbyId: str, playerId: str) -> bool:
+    def assignPlayerToLobby(self, lobbyId: str, playerId: str):
         lobby = self.lobbies.get(lobbyId, None)
         player = self.players.get(playerId, None)
-        print(lobbyId, playerId)
-        if lobby and player and not lobby.isFull():
-            lobby.addPlayer(player)
-            player.lobbyId = lobby.id
-            return True
-        #print(lobby, player)
-        return False
+
+        if not lobby:
+            raise ValueError("Lobby does not exist")
+        if not player:
+            raise ValueError("Player is not registred")
+        if lobby.isFull():
+            raise ValueError("This lobby is already full")
+
+        lobby.addPlayer(player)
+        player.lobbyId = lobby.id
 
     def tryToStartGame(self, lobbyId:str) -> Game:
         lobby = self.lobbies.get(lobbyId)

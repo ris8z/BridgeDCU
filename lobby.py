@@ -37,5 +37,11 @@ class Lobby:
     def broadcastMassage(self, eventName, data):
         emit(eventName, data, to=self.id)
 
+    def getIdx(self, playerId: str):
+        for idx, p in enumerate(self.players):
+            if p.id == playerId:
+                return idx
+        return -1
+
     def __str__(self):
         return f"Lobby({self.id})"
